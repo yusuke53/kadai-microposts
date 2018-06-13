@@ -1,3 +1,4 @@
+@if (count($microposts) > 0)
 <ul class="media-list">
 @foreach ($microposts as $micropost)
     <?php $user = $micropost->user; ?>
@@ -13,6 +14,13 @@
                 <p>{!! nl2br(e($micropost->content)) !!}</p>
             </div>
             <div>
+                @if (Auth::user()->id == $micropost->user_id)
+                    {!! Form::open(['route' => ['microposts.destroy', $micropost->id], 'method' => 'delete']) !!}
+                        {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-xs']) !!}
+                    {!! Form::close() !!}
+                @endif
+            </div>
+            <div>
                 @if (Auth::user()->is_favoriting($micropost->id))
                     {!! Form::open(['route' => ['user.unfavorite', $micropost->id], 'method' => 'delete']) !!}
                         {!! Form::submit('Unfavorite', ['class' => "btn  btn-xs"]) !!}
@@ -23,15 +31,9 @@
                     {!! Form::close() !!}
                 @endif
             </div>
-            <div>
-                @if (Auth::user()->id == $micropost->user_id)
-                    {!! Form::open(['route' => ['microposts.destroy', $micropost->id], 'method' => 'delete']) !!}
-                        {!! Form::submit('Delete', ['class' => 'btn btn-danger btn-xs']) !!}
-                    {!! Form::close() !!}
-                @endif
-            </div>
         </div>
     </li>
 @endforeach
 </ul>
 {!! $microposts->render() !!}
+@endif
